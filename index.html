@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NeonLens: Neon DB Dashboard for iOS</title>
+  <meta name="description" content="Native iOS dashboard for Neon serverless Postgres. Monitor projects, branches, and consumption from your pocket. Zero backend. Zero telemetry.">
+  <meta property="og:title" content="NeonLens: Neon DB Dashboard for iOS">
+  <meta property="og:description" content="Native iOS dashboard for Neon serverless Postgres. Zero backend, zero telemetry. Your API key never leaves your device.">
+  <meta property="og:image" content="assets/neon-lens.png">
+  <meta property="og:type" content="website">
+  <style>
+    :root {
+      --neon-green: #00E599;
+      --neon-green-dim: rgba(0,229,153,0.12);
+      --bg-dark: #0A0A0A;
+      --bg-card: #111111;
+      --bg-card-2: #161616;
+      --text-primary: #FFFFFF;
+      --text-secondary: #8A8A8A;
+      --text-tertiary: #555555;
+      --border: rgba(255,255,255,0.08);
+      --font-mono: 'SF Mono', ui-monospace, 'Cascadia Code', Menlo, monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+      --max-width: 960px;
+      --radius: 12px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--neon-green); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 56px;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-wordmark {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--neon-green);
+      letter-spacing: -0.02em;
+    }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--neon-green);
+      color: #000;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 20px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+
+    .nav-cta:hover { opacity: 0.85; text-decoration: none; }
+
+    /* ── Hero ── */
+    .hero {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 80px 24px 64px;
+      display: flex;
+      align-items: center;
+      gap: 56px;
+    }
+
+    .hero-text { flex: 1; }
+
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 {
+      font-size: clamp(48px, 8vw, 72px);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    .hero-sub {
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-desc {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 420px;
+      margin-bottom: 36px;
+      line-height: 1.7;
+    }
+
+    .hero-badge {
+      display: inline-block;
+    }
+
+    .hero-badge img {
+      height: 48px;
+      display: block;
+    }
+
+    .hero-badge-placeholder {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 13px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-family: var(--font-sans);
+    }
+
+    .hero-visual {
+      flex-shrink: 0;
+    }
+
+    .hero-visual img {
+      width: 220px;
+      display: block;
+      filter: drop-shadow(0 0 40px rgba(0,229,153,0.35)) drop-shadow(0 8px 24px rgba(0,0,0,0.6));
+    }
+
+    /* ── Trust strip ── */
+    .trust-strip {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 24px;
+    }
+
+    .trust-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: 0.01em;
+    }
+
+    .trust-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--neon-green);
+      flex-shrink: 0;
+    }
+
+    /* ── Section common ── */
+    .section {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--neon-green);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 4vw, 36px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    /* ── Feature grid ── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: border-color 0.15s;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(0,229,153,0.25);
+    }
+
+    .feature-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--neon-green-dim);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    .feature-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--neon-green);
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .feature-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-primary);
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ── Pricing ── */
+    .pricing-wrap {
+      display: flex;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .pricing-card {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pricing-card.pro {
+      border-color: var(--neon-green);
+      box-shadow: 0 0 0 1px var(--neon-green), 0 8px 32px rgba(0,229,153,0.12);
+    }
+
+    .pricing-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .pricing-tier {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .pricing-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #000;
+      background: var(--neon-green);
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+
+    .pricing-price {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      letter-spacing: -0.03em;
+    }
+
+    .pricing-price span {
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .pricing-list {
+      list-style: none;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 0;
+    }
+
+    .pricing-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .check {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--neon-green-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .check svg {
+      width: 9px;
+      height: 9px;
+      stroke: var(--neon-green);
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .pricing-note {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-tertiary);
+      margin-top: 20px;
+    }
+
+    /* ── Privacy callout ── */
+    .privacy-section {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 80px 24px;
+    }
+
+    .privacy-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+    }
+
+    .privacy-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-top: 48px;
+    }
+
+    .privacy-item h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .privacy-item p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .privacy-item code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--neon-green);
+      background: var(--neon-green-dim);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
+    .privacy-link-wrap {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .privacy-link-wrap a {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .privacy-link-wrap a:hover {
+      color: var(--neon-green);
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: #000;
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+    }
+
+    .footer-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-left {
+      font-size: 13px;
+      color: var(--text-tertiary);
+    }
+
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .footer-right a {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      text-decoration: none;
+    }
+
+    .footer-right a:hover { color: var(--text-secondary); }
+
+    .footer-disclaimer {
+      max-width: var(--max-width);
+      margin: 16px auto 0;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .hero {
+        flex-direction: column-reverse;
+        align-items: center;
+        text-align: center;
+        padding: 48px 24px 40px;
+        gap: 32px;
+      }
+
+      .hero-desc { margin-left: auto; margin-right: auto; }
+
+      .hero-visual img { width: 220px; }
+
+      .trust-inner { gap: 20px; }
+
+      .feature-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .pricing-wrap { flex-direction: column; }
+
+      .privacy-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 480px) {
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <span class="nav-wordmark">NeonLens</span>
+    <a href="#" class="nav-cta">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      App Store
+    </a>
+  </nav>
+
+  <!-- Hero -->
+  <section>
+    <div class="hero">
+      <div class="hero-text">
+        <p class="hero-label">Developer Tools &middot; iOS 17+</p>
+        <h1>NeonLens</h1>
+        <p class="hero-sub">Neon DB dashboard for iOS</p>
+        <p class="hero-desc">Monitor your Neon projects, branches, endpoints, and consumption from your iPhone. Zero backend. Your API key never leaves your device.</p>
+        <a href="#" class="hero-badge">
+          <div class="hero-badge-placeholder">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.5"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            Download on the App Store
+          </div>
+        </a>
+      </div>
+      <div class="hero-visual">
+        <img src="assets/neon-lens.png" alt="NeonLens app showing project dashboard">
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust strip -->
+  <div class="trust-strip">
+    <div class="trust-inner">
+      <div class="trust-item"><span class="trust-dot"></span>Zero backend</div>
+      <div class="trust-item"><span class="trust-dot"></span>Zero telemetry</div>
+      <div class="trust-item"><span class="trust-dot"></span>API key on-device only</div>
+      <div class="trust-item"><span class="trust-dot"></span>No third-party SDKs</div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="section">
+    <p class="section-label">Features</p>
+    <h2 class="section-title">What's included</h2>
+    <div class="feature-grid">
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </div>
+        <div class="feature-title">Projects at a glance</div>
+        <div class="feature-desc">View all your Neon projects with live compute status badges in one scrollable list.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div class="feature-title">Branch browser</div>
+        <div class="feature-desc">Navigate branches, endpoints, databases, and roles per project from a single detail view.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="feature-title">Consumption metrics</div>
+        <div class="feature-desc">Track compute hours, active time, storage, and data written for your billing period.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <div class="feature-title">Table viewer</div>
+        <div class="feature-desc">Browse table data read-only with column sorting, pagination, and visibility controls.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="feature-title">Biometric lock</div>
+        <div class="feature-desc">Protect your API key with Face ID or Touch ID. Locks automatically when you leave the app.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <div class="feature-title">Compute timeline</div>
+        <div class="feature-desc">Daily compute hours chart for the current billing period with per-project breakdown.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Pricing -->
+  <div style="background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 80px 24px;">
+    <div style="max-width: var(--max-width); margin: 0 auto;">
+      <p class="section-label">Pricing</p>
+      <h2 class="section-title">Simple, one-time pricing</h2>
+      <p style="text-align:center; color:var(--text-secondary); font-size:15px; margin-top:-32px; margin-bottom:48px;">No subscriptions. Unlock Pro once and keep it forever.</p>
+      <div class="pricing-wrap">
+
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <span class="pricing-tier">Free</span>
+          </div>
+          <div class="pricing-price">Included</div>
+          <ul class="pricing-list">
+            <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>View all projects, branches, endpoints, databases, roles</li>
+            <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Live compute status badges</li>
+            <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Biometric lock (Face ID / Touch ID)</li>
+            <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Browse 1 pinned table</li>
+          </ul>
+        </div>
+
+        <div class="pricing-card pro">
+          <div class="pricing-header">
+            <span class="pricing-tier">Pro</span>
+            <span class="pricing-badge">One-Time</span>
+          </div>
+          <div class="pricing-price">One-Time Purchase</div>
+          <ul class="pricing-list">
+            <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Everything in Free</li>
+            <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Consumption analytics &amp; charts</li>
+            <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Plan usage gauges with limit warnings</li>
+            <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Per-project consumption breakdown</li>
+            <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Unlimited pinned tables</li>
+            <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Column sorting &amp; visibility controls</li>
+          </ul>
+        </div>
+
+      </div>
+      <p class="pricing-note">In-app purchase processed entirely by Apple.</p>
+    </div>
+  </div>
+
+  <!-- Privacy callout -->
+  <div class="privacy-section">
+    <div class="privacy-inner">
+      <p class="section-label">Privacy</p>
+      <h2 class="section-title">No data collected. Ever.</h2>
+      <div class="privacy-grid">
+        <div class="privacy-item">
+          <h3>No data collection</h3>
+          <p>No analytics, no telemetry, no crash reporting. Nothing is collected or transmitted to the developer.</p>
+        </div>
+        <div class="privacy-item">
+          <h3>No backend</h3>
+          <p>Every API call goes directly from your device to Neon's API. The developer has no server and receives nothing.</p>
+        </div>
+        <div class="privacy-item">
+          <h3>Keychain-protected</h3>
+          <p>Your API key is stored with <code>kSecAttrAccessibleWhenUnlockedThisDeviceOnly</code>, inaccessible when the device is locked, and never sent anywhere other than Neon.</p>
+        </div>
+      </div>
+      <div class="privacy-link-wrap">
+        <a href="privacy.html">Read the full Privacy Policy &rarr;</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <span class="footer-left">&copy; 2025 Alex Hurley</span>
+      <div class="footer-right">
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="mailto:alexhhopson@gmail.com">Contact</a>
+        <a href="https://neon.tech" target="_blank" rel="noopener">Neon</a>
+      </div>
+    </div>
+    <p class="footer-disclaimer">NeonLens is not affiliated with or endorsed by Neon, Inc.</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy Policy — NeonLens</title>
+  <meta name="description" content="Privacy Policy for NeonLens, the native iOS dashboard for Neon serverless Postgres.">
+  <style>
+    :root {
+      --neon-green: #00E599;
+      --neon-green-dim: rgba(0,229,153,0.12);
+      --bg-dark: #0A0A0A;
+      --bg-card: #111111;
+      --text-primary: #FFFFFF;
+      --text-secondary: #8A8A8A;
+      --text-tertiary: #555555;
+      --border: rgba(255,255,255,0.08);
+      --font-mono: 'SF Mono', ui-monospace, 'Cascadia Code', Menlo, monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--neon-green); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Nav ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 56px;
+      background: rgba(10,10,10,0.95);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-back {
+      font-size: 14px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .nav-back:hover { color: var(--text-primary); text-decoration: none; }
+
+    .nav-wordmark {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--neon-green);
+    }
+
+    /* ── Content ── */
+    .content {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+    }
+
+    .page-title {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+
+    .page-meta {
+      font-size: 14px;
+      color: var(--text-tertiary);
+      margin-bottom: 48px;
+    }
+
+    .page-meta span + span::before {
+      content: ' · ';
+    }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--text-primary);
+      border-left: 3px solid var(--neon-green);
+      padding-left: 14px;
+      margin-top: 48px;
+      margin-bottom: 16px;
+    }
+
+    p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+
+    ul {
+      margin: 12px 0 14px 0;
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    ul li {
+      font-size: 15px;
+      color: var(--text-secondary);
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--neon-green);
+      background: var(--neon-green-dim);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .summary-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--neon-green);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 48px;
+    }
+
+    .summary-box p {
+      margin-bottom: 0;
+      font-size: 15px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: #000;
+      border-top: 1px solid var(--border);
+      padding: 28px 24px;
+      text-align: center;
+    }
+
+    footer p {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      margin: 0;
+    }
+
+    footer a {
+      color: var(--text-tertiary);
+    }
+
+    footer a:hover {
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to NeonLens
+    </a>
+    <span class="nav-wordmark">NeonLens</span>
+  </nav>
+
+  <div class="content">
+
+    <h1 class="page-title">Privacy Policy</h1>
+    <p class="page-meta">
+      <span>Effective: April 12, 2025</span>
+      <span>Last updated: April 12, 2025</span>
+    </p>
+
+    <div class="summary-box">
+      <p><strong>The short version:</strong> NeonLens collects no personal data. No analytics, no telemetry, no crash reporting. Your Neon API key is stored only in your device's iOS Keychain and is never transmitted to the developer or any third party.</p>
+    </div>
+
+    <h2>1. Introduction</h2>
+    <p>NeonLens is a native iOS application developed by <strong>Alex Hurley</strong>. It provides a dashboard for monitoring <a href="https://neon.tech" target="_blank" rel="noopener">Neon</a> serverless Postgres projects.</p>
+    <p>This Privacy Policy explains how NeonLens handles information when you use the app. The app collects no data, so this is short: we collect nothing about you.</p>
+
+    <h2>2. Information We Collect</h2>
+    <p>NeonLens does <strong>not</strong> collect, transmit, or store any personal information on any server operated by the developer. Specifically:</p>
+    <ul>
+      <li><strong>Personal information:</strong> None collected.</li>
+      <li><strong>Usage data and analytics:</strong> None collected. There is no analytics SDK, no telemetry, no usage tracking, and no crash reporting in the app.</li>
+      <li><strong>Device identifiers:</strong> None collected or transmitted.</li>
+      <li><strong>Location data:</strong> Not requested and not used.</li>
+      <li><strong>Contacts, camera, microphone:</strong> Not requested and not used.</li>
+    </ul>
+    <p><strong>Neon API key:</strong> When you use NeonLens, you provide a Neon API key. This key is stored locally on your device in the iOS Keychain. It is used solely to authenticate API requests made directly from your device to the Neon API. It is never transmitted to the developer or any server other than Neon's own API endpoint (<code>https://console.neon.tech/api/v2</code>).</p>
+
+    <h2>3. How We Use Your Information</h2>
+    <p>The developer has no access to your information because no information is transmitted to the developer.</p>
+    <p>The Neon API key stored in your Keychain is used exclusively by the app, running on your device, to make authenticated API calls to Neon's service on your behalf. The content returned by those API calls (your project names, branch data, consumption metrics, etc.) is displayed in the app and never leaves your device except in requests you initiate back to Neon.</p>
+
+    <h2>4. Information Sharing and Disclosure</h2>
+    <p>We do not sell your information. We do not share your information. We have no advertising networks, no marketing platforms, and no third-party analytics SDKs embedded in the app.</p>
+    <p>NeonLens has <strong>zero third-party dependencies</strong>. It uses only Apple system frameworks (SwiftUI, StoreKit, LocalAuthentication, Security, Charts, URLSession).</p>
+    <p>The only external service the app communicates with is the <strong>Neon API</strong>, and only when you take explicit action in the app. That communication uses your own API key and is subject to <a href="https://neon.tech/privacy" target="_blank" rel="noopener">Neon's Privacy Policy</a>.</p>
+
+    <h2>5. In-App Purchases</h2>
+    <p>NeonLens offers an optional one-time Pro unlock via Apple's StoreKit 2 framework. All payment processing is handled entirely by Apple. NeonLens never receives, processes, or stores any payment information.</p>
+    <p>Apple's handling of purchase transactions is governed by <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Apple's Privacy Policy</a>.</p>
+
+    <h2>6. Data Retention</h2>
+    <p>Because the developer collects no data, there is nothing for the developer to retain or delete.</p>
+    <p>On your device, the Neon API key persists in the iOS Keychain until you explicitly revoke it via <strong>Settings &rarr; Revoke API Key</strong> within the app, or until you delete the app. Deleting the app removes all associated Keychain entries.</p>
+
+    <h2>7. Security</h2>
+    <p>NeonLens uses the following security measures to protect your API key on-device:</p>
+    <ul>
+      <li>The key is stored in the iOS Keychain with the <code>kSecAttrAccessibleWhenUnlockedThisDeviceOnly</code> protection class. This means it is inaccessible when the device is locked, and it cannot be transferred to another device via backup or iCloud.</li>
+      <li>An optional biometric lock (Face ID or Touch ID) requires authentication before the app displays any data.</li>
+      <li>The app contains no third-party code, eliminating supply-chain attack surface.</li>
+    </ul>
+
+    <h2>8. Children's Privacy</h2>
+    <p>NeonLens is a developer tool intended for use by adults who operate Neon database accounts. The app is not directed at children under the age of 13, and we do not knowingly collect information from children.</p>
+    <p>If you believe a child has provided information through the app, please contact us at <a href="mailto:alexhhopson@gmail.com">alexhhopson@gmail.com</a>. Although the app stores nothing on any server, we will investigate and take appropriate action.</p>
+
+    <h2>9. Third-Party Services</h2>
+    <p>NeonLens connects to the following external service:</p>
+    <ul>
+      <li><strong>Neon API</strong> (<code>https://console.neon.tech/api/v2</code>): retrieves your project, branch, endpoint, and consumption data using your own credentials. Subject to <a href="https://neon.tech/privacy" target="_blank" rel="noopener">Neon's Privacy Policy</a>.</li>
+    </ul>
+    <p>No other external services, APIs, or CDNs are contacted by the app.</p>
+
+    <h2>10. Changes to This Privacy Policy</h2>
+    <p>If this policy changes, the revised version will be posted here with an updated date. Since there are no user accounts, there is no way to notify you directly. Check this page periodically. Material changes will also appear in the app's App Store release notes.</p>
+    <p>Continued use of the app after a policy update constitutes acceptance of the revised terms.</p>
+
+    <h2>11. Contact</h2>
+    <p>If you have questions about this Privacy Policy, please contact:</p>
+    <p>
+      <strong>Alex Hurley</strong><br>
+      <a href="mailto:alexhhopson@gmail.com">alexhhopson@gmail.com</a>
+    </p>
+
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Alex Hurley &middot; <a href="index.html">NeonLens</a> &middot; NeonLens is not affiliated with or endorsed by Neon, Inc.</p>
+  </footer>
+
+</body>
+</html>
